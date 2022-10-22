@@ -1,0 +1,93 @@
+var express = require('express');
+const { response } = require('../app');
+const { addadmin } = require('../helpers/admin-helpers');
+var router = express.Router();
+var adminHelper=require('../helpers/admin-helpers');
+const userHelper = require('../helpers/user-helper');
+
+
+/* GET users listing. */
+router.get('/', function(req, res, next) {
+  let ADMIN=req.session.ADMIN
+console.log(ADMIN+"ggggggggggggggggggggggggggggggggggg");
+  res.render('admin/admin-login',{Admin:true,ADMIN})
+
+
+  
+
+
+ 
+
+});
+
+router.post("/admin-login",(req,res)=>{
+    console.log(req.body);
+
+
+   
+      // console.log(req.body);
+      adminHelper.doLoginAdmin(req.body).then((response)=>{
+        
+        if(response.status){
+          console.log(response.admin);
+          req.session.loggedIn=true
+          req.session.ADMIN=response.admin
+          res.redirect('admin/view-users',)
+        }
+        else{
+         
+          res.redirect('/admin')
+        }
+      })
+   
+
+
+
+    // adminHelper.adminLogin(req.body)
+
+  })
+
+  router.get('/admin/view-users',(req,res)=>{
+    adminHelper.getAllUsers().then((users)=>{
+      res.render('admin/view-users',{Admin:true,admin:true,users})
+    })
+  })
+
+
+router.get('/add-user',(req,res)=>{
+  res.render('admin/add-user',{Admin:true})
+})
+
+
+router.post('/add-user',(req,res)=>{
+  // console.log(req.body);
+  adminHelper.addusers(req.body,(response)=>{
+    console.log(response);
+    res.redirect("/admin/admin/view-users");
+  })
+
+
+})
+
+router.get('/admin/admin/delete-user/:id',(req,res)=>{
+  console.log(req.body,req.params.id);
+  let userId=req.params.id
+  adminHelper.deleteUser(userId).then((response)=>{
+    res.redirect("/admin/admin/view-users");
+  })
+
+})
+
+
+router.get("/admin/admin/edit-user/:id", async (req, res) => {
+  let user = await adminHelper.getUserDetails(req.params.id);
+  console.log(user);
+  res.render("admin/edit-user", {Admin:true,admin:true,user});
+});
+
+router.post("/edit-user/:id", (req,res) => {
+  adminHelper.updateUser(req.params.id,req.body).then(() => {
+    res.redirect("/admin/admin/view-users");
+  });
+});
+module.exports = router;

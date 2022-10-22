@@ -1,0 +1,46 @@
+
+
+   
+<section>
+    <div class="container">
+        <div class="row mt-4">
+         <a href="/admin/add-user"><button type="submit" class="btn btn-success mt-4 " id="form-submit">Add user</button></a>
+        
+        <table id="userTable" class="table table-dark table-hover mt-5 display" >
+  <thead>
+    <tr>
+      <th scope="col">no</th>
+      <th scope="col">user name</th>
+      <th scope="col">email</th>
+       <th scope="col">edit/delete</th>
+    
+     
+      
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    {{#each users}}
+    
+    <tr>
+      <th scope="row">{{inc @index}}</th>
+      <td>{{this.name}}</td>
+      <td>{{this.email}}</td>
+      
+      
+      <td><a href="admin/edit-user/{{this._id}}" class="btn btn-success">Edit</a>
+      <a href="admin/delete-user/{{this._id}}" class="btn btn-danger" onclick="return confirm(' press confirm to delete {{this.name}} ')">Delete</a></td>
+      
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+    </div>
+     </div>
+</section>
+
+<script>
+$(document).ready( function () {
+  console.log("------------------------")
+    $('#userTable').DataTable();
+} );
+</script>
